@@ -1,0 +1,16 @@
+﻿  Main.cpp
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\Main.cpp(13,36): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\Main.cpp(13,44): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\Main.cpp(40,15): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
+  utils.cpp
+  imgui.cpp
+  imgui_draw.cpp
+  imgui_impl_opengl3.cpp
+  imgui_impl_sdl2.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 1166 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  MarchingCubes.vcxproj -> C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\x64\Release\MarchingCubes.exe

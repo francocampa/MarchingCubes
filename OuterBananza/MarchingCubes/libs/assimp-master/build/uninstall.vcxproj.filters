@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Usuario\Desktop\Proyectos Comp Graf\assimp-master\build\CMakeFiles\6c73aeb3f36bafaa958c2f7ea49bb2a4\uninstall.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Usuario\Desktop\Proyectos Comp Graf\assimp-master\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Usuario\Desktop\Proyectos Comp Graf\assimp-master\build\CMakeFiles\uninstall" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{C7DE4113-1876-3F5D-AB93-E9B6FCBBBF02}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

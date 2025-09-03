@@ -1,0 +1,10 @@
+# CMake generation dependency list for this directory.
+C:/Users/Usuario/Desktop/Cmake/cmake-4.0.1-windows-x86_64/share/cmake-4.0/Modules/CheckCSourceCompiles.cmake
+C:/Users/Usuario/Desktop/Cmake/cmake-4.0.1-windows-x86_64/share/cmake-4.0/Modules/CheckFunctionExists.cmake
+C:/Users/Usuario/Desktop/Cmake/cmake-4.0.1-windows-x86_64/share/cmake-4.0/Modules/CheckIncludeFile.cmake
+C:/Users/Usuario/Desktop/Cmake/cmake-4.0.1-windows-x86_64/share/cmake-4.0/Modules/CheckIncludeFileCXX.cmake
+C:/Users/Usuario/Desktop/Cmake/cmake-4.0.1-windows-x86_64/share/cmake-4.0/Modules/CheckTypeSize.cmake
+C:/Users/Usuario/Desktop/Cmake/cmake-4.0.1-windows-x86_64/share/cmake-4.0/Modules/Internal/CheckSourceCompiles.cmake
+C:/Users/Usuario/Desktop/Proyectos Comp Graf/assimp-master/contrib/zlib/CMakeLists.txt
+C:/Users/Usuario/Desktop/Proyectos Comp Graf/assimp-master/contrib/zlib/zconf.h.cmakein
+C:/Users/Usuario/Desktop/Proyectos Comp Graf/assimp-master/contrib/zlib/zlib.pc.cmakein
