@@ -15,6 +15,8 @@ bool InputController::z = false;
 bool InputController::s = false;
 bool InputController::g = false;
 bool InputController::r = false;
+bool InputController::a = false;
+bool InputController::w = false;
 bool InputController::del = false;
 bool InputController::shift = false;
 bool InputController::d = false;
@@ -71,8 +73,13 @@ void InputController::procesFrameInputs(float deltaTime)
 				down = false;
 				break;
 			case SDLK_s:
-				s = keyTimer < CLICK_THRESHOLD;
-				keyTimer = 0.0f;
+				s = false;
+				break;
+			case SDLK_w:
+				w = false;
+				break;
+			case SDLK_a:
+				a = false;
 				break;
 			case SDLK_LEFT:
 				left = false;
@@ -89,8 +96,7 @@ void InputController::procesFrameInputs(float deltaTime)
 				keyTimer = 0.0f;
 				break;
 			case SDLK_d:
-				d = keyTimer < CLICK_THRESHOLD;
-				keyTimer = 0.0f;
+				d = false;
 				break;
 			case SDLK_y:
 				y = keyTimer < CLICK_THRESHOLD;
@@ -134,13 +140,19 @@ void InputController::procesFrameInputs(float deltaTime)
 				down = true;
 				break;
 			case SDLK_s:
-				keyTimer = 0.0f;
+				s = true;
 				break;
 			case SDLK_LEFT:
 				left = true;
 				break;
 			case SDLK_RIGHT:
 				right = true;
+				break;
+			case SDLK_w:
+				w = true;
+				break;
+			case SDLK_a:
+				a = true;
 				break;
 			case SDLK_x:
 				keyTimer = 0.0f;
@@ -152,7 +164,7 @@ void InputController::procesFrameInputs(float deltaTime)
 				keyTimer = 0.0f;
 				break;
 			case SDLK_d:
-				keyTimer = 0.0f;
+				d = true;
 				break;
 			case SDLK_SPACE:
 				space = true;

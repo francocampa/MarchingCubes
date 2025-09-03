@@ -18,6 +18,8 @@ public:
 	static bool g;
 	static bool r;
 	static bool d;
+	static bool a;
+	static bool w;
 	static bool shift;
 	static bool del;
 	static bool close;
