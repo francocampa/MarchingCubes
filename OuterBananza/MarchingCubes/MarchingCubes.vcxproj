@@ -146,6 +146,7 @@
     <ClCompile Include="libs\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FastNoiseLite.h" />
     <ClInclude Include="InputController.h" />
     <ClInclude Include="InteractiveMC.h" />
     <ClInclude Include="Screen.h" />

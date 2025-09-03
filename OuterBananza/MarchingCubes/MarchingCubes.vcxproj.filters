@@ -19,6 +19,9 @@
     <Filter Include="InteractiveMC">
       <UniqueIdentifier>{1d307d50-c945-443e-84f4-35a5a88ee809}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{9397fb76-c9a9-4aeb-a093-86a60cd1f7a1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TerrainGen">
       <UniqueIdentifier>{1f3b0865-f259-4586-abee-ee235dbad038}</UniqueIdentifier>
     </Filter>
@@ -74,10 +77,13 @@
     <ClInclude Include="InteractiveMC.h">
       <Filter>InteractiveMC</Filter>
     </ClInclude>
+    <ClInclude Include="FastNoiseLite.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="MCTables.h">
-      <Filter>Source Files</Filter>
+      <Filter>Helpers</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "utils.h"
 #include "Screen.h"
+#include "TerrainGenerator.h"
 #include "InteractiveMC.h"
 #include "InputController.h"
 
@@ -43,8 +44,7 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-	/*glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);*/
+	glEnable(GL_CULL_FACE);
 
 	glMatrixMode(GL_PROJECTION);
 
@@ -59,7 +59,8 @@ int main(int argc, char* argv[]) {
 
 	Uint64 currentTick = SDL_GetPerformanceCounter();
 	Uint64 lastTick = currentTick;
-	screen = new InteractiveMC();
+	//screen = new InteractiveMC();
+	screen = new TerrainGenerator();
 	do {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();

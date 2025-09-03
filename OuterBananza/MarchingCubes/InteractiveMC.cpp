@@ -1,7 +1,5 @@
 #include "InteractiveMC.h"
 
-
-
 void InteractiveMC::handleCamera(float delta)
 {
 	if (InputController::mouseRight) {
@@ -136,7 +134,7 @@ void InteractiveMC::process(float delta) {
 
 		glm::vec3 e0 = points[1] - points[0];
 		glm::vec3 e1 = points[2] - points[0];
-		glm::vec3 normal = glm::cross(e0, e1);
+		glm::vec3 normal = glm::cross(e1, e0);
 		for (int j = 0; j < 3; j++) {
 			Vertex v = { points[j], normal ,glm::vec2(0,0) };
 			mc.indices.push_back(mc.vertices.size());
