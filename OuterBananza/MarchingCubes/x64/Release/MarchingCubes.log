@@ -3,14 +3,19 @@ C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\Mar
   (compiling source file 'TerrainGenerator.cpp')
   
 C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(15,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(275,54): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(275,54): warning C4267:         with
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(275,54): warning C4267:         [
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(275,54): warning C4267:             _Ty=GLuint
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(275,54): warning C4267:         ]
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(97,13): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(130,9): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+      C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(130,9):
+      consider using '%zd' in the format string
+  
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(316,54): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(316,54): warning C4267:         with
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(316,54): warning C4267:         [
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(316,54): warning C4267:             _Ty=GLuint
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(316,54): warning C4267:         ]
   Generating code
-  4 of 2015 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+  1 of 2239 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    45 functions had inline decision re-evaluated but remain unchanged
+    38 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   MarchingCubes.vcxproj -> C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\x64\Release\MarchingCubes.exe

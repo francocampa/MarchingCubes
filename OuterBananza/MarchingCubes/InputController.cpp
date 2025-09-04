@@ -46,8 +46,6 @@ void InputController::procesFrameInputs(float deltaTime)
 	clickRight = false;
 	g = false;
 	r = false;
-	x = false;
-	z = false;
 	y = false;
 	del = false;
 	mouseMove.x = 0;;
@@ -86,12 +84,10 @@ void InputController::procesFrameInputs(float deltaTime)
 				right = false;
 				break;
 			case SDLK_x:
-				x = keyTimer < CLICK_THRESHOLD;
-				keyTimer = 0.0f;
+				x = false;
 				break;
 			case SDLK_z:
-				z = keyTimer < CLICK_THRESHOLD;
-				keyTimer = 0.0f;
+				z = false;
 				break;
 			case SDLK_d:
 				d = false;
@@ -153,10 +149,10 @@ void InputController::procesFrameInputs(float deltaTime)
 				a = true;
 				break;
 			case SDLK_x:
-				keyTimer = 0.0f;
+				x = true;
 				break;
 			case SDLK_z:
-				keyTimer = 0.0f;
+				z = true;
 				break;
 			case SDLK_y:
 				keyTimer = 0.0f;

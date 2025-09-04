@@ -92,7 +92,46 @@ void TerrainGenerator::handlePlayer(float delta)
 		printVec3(chunkPos);
 		generateTerrain();
 	}
+
+	if (InputController::x || InputController::z) {
+		float vel =InputController::x ? -2 : 2;
+		for (glm::vec3 pos : getPointsInRadius(pPos, 1)) {
+			glm::ivec3 ipos = pos / distance;
+			float newVal = f(pos) + vel * delta;
+			terrainModifications[ipos] = newVal;
+
+			generateChunk(centerChunk,chunks[1*3 +1].mesh);
+		}
+	}
 }
+
+std::vector<glm::vec3> TerrainGenerator::getPointsInRadius(glm::vec3 pos, float radius) {
+	glm::ivec3 centerGrid = {
+		static_cast<int>(floor(pos.x / distance)),
+		static_cast<int>(floor(pos.y / distance)),
+		static_cast<int>(floor(pos.z / distance))
+	};
+	glm::vec3 center = glm::vec3(centerGrid) * distance;
+
+	int range = static_cast<int>(ceil(radius / distance));
+
+	std::vector<glm::vec3> points;
+	points.reserve((2 * range + 1) * (2 * range + 1) * (2 * range + 1));
+
+	for (int x = -range; x <= range; x++)
+		for (int y = -range; y <= range; y++)
+			for (int z = -range; z <= range; z++)
+			{
+				glm::vec3 point = center + glm::vec3(x, y, z) * distance;
+				if (glm::length(pos - point) <= radius)
+					points.push_back(point);
+			}
+
+	printf("%d \n", points.size());
+
+	return points;
+}
+
 
 void TerrainGenerator::handleUI()
 {
@@ -103,7 +142,8 @@ void TerrainGenerator::handleUI()
 	ImGui::Begin("Files menu");
 	;
 	if (ImGui::SliderFloat("Threshold", &threshold, -5.0f, 5.0f)
-		|| ImGui::SliderFloat("Frequency", &frequency, 0.0f, 1.0f)
+		|| ImGui::SliderFloat("Frequency", &frequency, 0.0f, 1.0f) 
+		|| ImGui::SliderFloat("Noise weight", &noiseWeight,0,10.0f)
 		|| ImGui::InputInt("Seed", &seed)) {
 		setNoiseParams();
 		generateTerrain();
@@ -216,20 +256,18 @@ void TerrainGenerator::generateTerrain()
 		for (int z = 0; z < 3; z++) {
 			glm::vec3 chunkOrigin = centerChunk - glm::vec3(x-1,0,z-1) * chunkSeparation;
 			int index = x * 3 + z;
-			chunks[index].mesh.vertices.clear();
-			chunks[index].mesh.indices.clear();
 			generateChunk(chunkOrigin,chunks[index].mesh);
-			chunks->pos = chunkOrigin;
+			chunks->pos = glm::vec3(x - 1, 0, z - 1) * chunkSeparation;
 		}
-}
 
-void TerrainGenerator::generateChunk(glm::vec3 offset, Mesh&terrain) {
+
+
 	visualizationSpheres.clear();
 	// Preview spheres
-	for (int x = 0; x < base; x++) 
-		for (int y = 0; y < height; y++) 
+	for (int x = 0; x < base; x++)
+		for (int y = 0; y < height; y++)
 			for (int z = 0; z < base; z++) {
-				glm::vec3 pos = offset + glm::vec3(x,y,z) * distance;
+				glm::vec3 pos = centerChunk + glm::vec3(x, y, z) * distance;
 
 				Sphere s;
 				s.m = createSphereMesh(0.05f, 6, 6);
@@ -237,9 +275,12 @@ void TerrainGenerator::generateChunk(glm::vec3 offset, Mesh&terrain) {
 				s.color = f(pos) > threshold ? glm::vec3(1, 1, 1) : glm::vec3(0, 0, 0);
 				visualizationSpheres.push_back(s);
 			}
+}
 
-
+void TerrainGenerator::generateChunk(glm::vec3 offset, Mesh&terrain) {
 	//MC
+	terrain.vertices.clear();
+	terrain.indices.clear();
 	for (int x = 0; x < base; x++)
 		for (int y = 0; y < height; y++)
 			for (int z = 0; z < base; z++) {
@@ -280,7 +321,11 @@ void TerrainGenerator::generateChunk(glm::vec3 offset, Mesh&terrain) {
 }
 
 float TerrainGenerator::f(glm::vec3 pos) {
-	return -pos.y + noise.GetNoise(pos.x, pos.y, pos.z);
+	glm::ivec3 ipos = pos / distance;
+
+	return terrainModifications.count(ipos) > 0 ?
+		terrainModifications[ipos]
+		: -pos.y + noise.GetNoise(pos.x, pos.y, pos.z)*noiseWeight;
 }
 
 void TerrainGenerator::process(float delta) {
