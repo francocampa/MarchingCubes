@@ -28,6 +28,47 @@ void renderChunk(Chunk chunk)
 	glPopMatrix();
 }
 
+Mesh createCubeMesh(float size) {
+	Mesh cube;
+	float h = size / 2.0f;
+
+	glm::vec3 positions[] = {
+		{-h, -h, -h}, { h, -h, -h}, { h,  h, -h}, {-h,  h, -h}, // back
+		{-h, -h,  h}, { h, -h,  h}, { h,  h,  h}, {-h,  h,  h}  // front
+	};
+
+	int faceIndices[][6] = {
+		{0, 1, 2, 2, 3, 0}, // back
+		{4, 5, 6, 6, 7, 4}, // front
+		{0, 4, 7, 7, 3, 0}, // left
+		{1, 5, 6, 6, 2, 1}, // right
+		{3, 2, 6, 6, 7, 3}, // top
+		{0, 1, 5, 5, 4, 0}  // bottom
+	};
+
+	glm::vec3 normals[] = {
+		{ 0,  0, -1},  // back
+		{ 0,  0,  1},  // front
+		{-1,  0,  0},  // left
+		{ 1,  0,  0},  // right
+		{ 0,  1,  0},  // top
+		{ 0, -1,  0}   // bottom
+	};
+
+	for (int f = 0; f < 6; ++f) {
+		for (int i = 0; i < 6; ++i) {
+			Vertex v;
+			v.position = positions[faceIndices[f][i]];
+			v.normal = normals[f];
+			v.texCoord = { 0.0f, 0.0f };
+			cube.vertices.push_back(v);
+			cube.indices.push_back(static_cast<unsigned int>(cube.indices.size()));
+		}
+	}
+
+	return cube;
+}
+
 Mesh createSphereMesh(float radius, int sectorCount, int stackCount) {
 	Mesh sphere;
 	for (int i = 0; i <= stackCount; ++i) {

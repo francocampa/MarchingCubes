@@ -60,6 +60,9 @@
     <ClCompile Include="InteractiveMC.cpp">
       <Filter>InteractiveMC</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
@@ -79,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="FastNoiseLite.h">
       <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

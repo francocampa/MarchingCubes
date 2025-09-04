@@ -136,6 +136,7 @@
     <ClCompile Include="InputController.cpp" />
     <ClCompile Include="InteractiveMC.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="TerrainGenerator.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="libs\imgui\imgui.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="FastNoiseLite.h" />
     <ClInclude Include="InputController.h" />
     <ClInclude Include="InteractiveMC.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="TerrainGenerator.h" />
     <ClInclude Include="utils.h" />

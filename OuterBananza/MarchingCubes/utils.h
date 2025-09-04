@@ -32,6 +32,7 @@ void renderChunk(Chunk chunk);
 
 void renderMesh(Mesh mesh, glm::vec3 pos, glm::vec3 color, float scale = 1);
 
+Mesh createCubeMesh(float size);
 Mesh createSphereMesh(float radius, int sectorCount, int stackCount);
 
 void printVec3(glm::vec3 v);

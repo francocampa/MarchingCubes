@@ -36,16 +36,16 @@ void TerrainGenerator::handleCamera(float delta)
 		float vel = 10.0f;
 		glm::vec3 front = glm::normalize(cam.position - center);
 		glm::vec3 right = glm::normalize(glm::cross(front, { 0,1,0 }));
-		if (InputController::up) {
+		if (InputController::w) {
 			cam.position = cam.position - vel * delta * front;
 		}
-		if (InputController::down) {
+		if (InputController::s) {
 			cam.position = cam.position + vel * delta * front;
 		}
-		if (InputController::right) {
+		if (InputController::d) {
 			cam.position = cam.position - vel * delta * right;
 		}
-		if (InputController::left) {
+		if (InputController::a) {
 			cam.position = cam.position + vel * delta * right;
 		}
 	}
@@ -75,6 +75,23 @@ void TerrainGenerator::handleLight()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
 
 	enabledLight = true;
+}
+
+void TerrainGenerator::handlePlayer(float delta)
+{
+	player.process(delta);
+
+	glm::vec3 pPos = player.getPos();
+
+	glm::vec3 chunkPos = getChunkForPos(pPos);
+
+	glm::vec3 chunkDiff = glm::abs(chunkPos - centerChunk);
+
+	if (chunkDiff.x > 0.1f || chunkDiff.y > 0.1f || chunkDiff.z > 0.1f) {
+		centerChunk = chunkPos;
+		printVec3(chunkPos);
+		generateTerrain();
+	}
 }
 
 void TerrainGenerator::handleUI()
@@ -125,10 +142,54 @@ void TerrainGenerator::handleUI()
 	}
 
 	ImGui::Checkbox("Show spheres", &showSpheres);
+	ImGui::Checkbox("Show chunk box", &showChunks);
 	ImGui::End();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void TerrainGenerator::handleVisualizations()
+{
+	if (showSpheres)
+		for (int x = 0; x < base; x++)
+			for (int y = 0; y < height; y++)
+				for (int z = 0; z < base; z++)
+				{
+					Sphere s = visualizationSpheres[x * base * height + y * base + z];
+					renderMesh(s.m, s.pos, s.color, 1);
+				}
+
+	if (showChunks) {
+		float chunkSeparation = base * distance;
+		for (int x = 0; x < 3; x++)
+			for (int z = 0; z < 3; z++) {
+				glm::vec3 chunkOrigin = centerChunk - glm::vec3(x - 1, 0, z - 1) * chunkSeparation;
+				Mesh cube = createCubeMesh(chunkSeparation);
+
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				renderMesh(cube, chunkOrigin + base * distance / 2, glm::vec3(1, 1, 1));
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+		
+	}
+}
+
+glm::vec3 TerrainGenerator::getChunkForPos(glm::vec3 pos)
+{
+	glm::vec3 chunkSize = glm::vec3(base, height, base)*distance;
+
+	int chunkX = static_cast<int>(floor(pos.x / chunkSize.x));
+	int chunkY = static_cast<int>(floor(pos.y / chunkSize.y));
+	int chunkZ = static_cast<int>(floor(pos.z / chunkSize.z));
+
+	glm::vec3 chunkOrigin = glm::vec3(
+		chunkX * chunkSize.x,
+		chunkY * chunkSize.y,
+		chunkZ * chunkSize.z
+	);
+
+	return chunkOrigin;
 }
 
 void TerrainGenerator::setNoiseParams()
@@ -143,17 +204,32 @@ TerrainGenerator::TerrainGenerator()
 	glShadeModel(GL_SMOOTH);
 	setNoiseParams();
 	generateTerrain();
+
+	player = Player();
 }
 
-void TerrainGenerator::generateTerrain() {
-	visualizationSpheres.clear();
-	terrain = Mesh();
+void TerrainGenerator::generateTerrain()
+{
+	float chunkSeparation = base * distance;
 
+	for (int x = 0; x < 3; x++)
+		for (int z = 0; z < 3; z++) {
+			glm::vec3 chunkOrigin = centerChunk - glm::vec3(x-1,0,z-1) * chunkSeparation;
+			int index = x * 3 + z;
+			chunks[index].mesh.vertices.clear();
+			chunks[index].mesh.indices.clear();
+			generateChunk(chunkOrigin,chunks[index].mesh);
+			chunks->pos = chunkOrigin;
+		}
+}
+
+void TerrainGenerator::generateChunk(glm::vec3 offset, Mesh&terrain) {
+	visualizationSpheres.clear();
 	// Preview spheres
 	for (int x = 0; x < base; x++) 
 		for (int y = 0; y < height; y++) 
 			for (int z = 0; z < base; z++) {
-				glm::vec3 pos = glm::vec3(x,y,z) * distance;
+				glm::vec3 pos = offset + glm::vec3(x,y,z) * distance;
 
 				Sphere s;
 				s.m = createSphereMesh(0.05f, 6, 6);
@@ -167,7 +243,7 @@ void TerrainGenerator::generateTerrain() {
 	for (int x = 0; x < base; x++)
 		for (int y = 0; y < height; y++)
 			for (int z = 0; z < base; z++) {
-				glm::vec3 pos = glm::vec3(x, y, z) * distance;
+				glm::vec3 pos = offset + glm::vec3(x, y, z) * distance;
 				int mcCase = 0;
 				for (int i = 0; i < 8; i++)
 					if (f(getIndexPos(pos,i)) > threshold)
@@ -210,21 +286,13 @@ float TerrainGenerator::f(glm::vec3 pos) {
 void TerrainGenerator::process(float delta) {
 	handleCamera(delta);
 	handleLight();
-
-	if(showSpheres)
-		for (int x = 0; x < base; x++) 
-			for (int y = 0; y < height; y++) 
-				for (int z = 0; z < base; z++) 
-				{
-					Sphere s = visualizationSpheres[x*base*height + y*base + z];
-					renderMesh(s.m, s.pos, s.color, 1);
-				}
-
-	//printf("terrain vertices: %d \n",terrain.vertices.size());
+	handlePlayer(delta);
+	handleVisualizations();
 
 	glEnable(GL_LIGHTING);
-
-	renderMesh(terrain, glm::vec3(0, 0, 0), glm::vec3(0.5, 0, 0), 1);
+	
+	for(int i = 0; i < 9 ; i++)
+		renderMesh(chunks[i].mesh, glm::vec3(0, 0, 0), glm::vec3(0.5, 0, 0), 1);
 
 	glDisable(GL_LIGHTING);
 

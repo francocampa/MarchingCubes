@@ -5,6 +5,7 @@
 #include <string>
 #include "InputController.h"
 #include "MCTables.h"
+#include "Player.h"
 #include <SDL.h>
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
@@ -23,26 +24,35 @@ private:
 	int base = 20;
 	int height = 10;
 
-	float threshold = 0.3f;
+	float threshold = -1.0f;
 	int seed = 0;
 	float frequency = 0.1f;
 	FastNoiseLite::NoiseType noiseType = FastNoiseLite::NoiseType_OpenSimplex2;
 	FastNoiseLite noise;
 	void generateTerrain();
+	void generateChunk(glm::vec3 offset, Mesh&terrain);
 	glm::vec3 getIndexPos(glm::vec3 offset, int i);
 	float f(glm::vec3 pos);
+	Chunk chunks[9];
 	Mesh terrain;
 
 	bool showSpheres = false;
 	std::vector<Sphere> visualizationSpheres;
+	bool showChunks = false;
 
-	Camera cam;
+	Player player;
+	glm::vec3 centerChunk = {0,0,0};
+
+	Camera cam= { {-5,5,-5},0,0}; //Por alguna raz[on rompe la luz las coordenadas polares
 	glm::vec3 center;
 	bool enabledLight = false;
 	void handleCamera(float delta);
 	void handleLight();
+	void handlePlayer(float delta);
 	void handleUI();
+	void handleVisualizations();
 
+	glm::vec3 getChunkForPos(glm::vec3 pos);
 	void setNoiseParams();
 public:
 	TerrainGenerator();

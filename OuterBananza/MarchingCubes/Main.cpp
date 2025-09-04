@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	glMatrixMode(GL_PROJECTION);
 

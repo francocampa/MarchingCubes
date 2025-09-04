@@ -45,12 +45,10 @@ void InputController::procesFrameInputs(float deltaTime)
 	clickLeft = false;
 	clickRight = false;
 	g = false;
-	s = false;
 	r = false;
 	x = false;
 	z = false;
 	y = false;
-	d = false;
 	del = false;
 	mouseMove.x = 0;;
 	mouseMove.y = 0;;

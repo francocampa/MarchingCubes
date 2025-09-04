@@ -3,9 +3,9 @@ C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\Mar
   (compiling source file 'TerrainGenerator.cpp')
   
 C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(15,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(199,54): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(199,54): warning C4267:         with
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(199,54): warning C4267:         [
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(199,54): warning C4267:             _Ty=GLuint
-C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(199,54): warning C4267:         ]
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(269,54): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(269,54): warning C4267:         with
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(269,54): warning C4267:         [
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(269,54): warning C4267:             _Ty=GLuint
+C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\MarchingCubes\TerrainGenerator.cpp(269,54): warning C4267:         ]
   MarchingCubes.vcxproj -> C:\Users\fcamp\OneDrive\Desktop\Facultad\compgraf\MarchingCubes\OuterBananza\x64\Debug\MarchingCubes.exe
