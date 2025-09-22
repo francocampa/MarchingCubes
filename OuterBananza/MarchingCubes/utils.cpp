@@ -60,7 +60,6 @@ Mesh createCubeMesh(float size) {
 			Vertex v;
 			v.position = positions[faceIndices[f][i]];
 			v.normal = normals[f];
-			v.texCoord = { 0.0f, 0.0f };
 			cube.vertices.push_back(v);
 			cube.indices.push_back(static_cast<unsigned int>(cube.indices.size()));
 		}
@@ -88,7 +87,6 @@ Mesh createSphereMesh(float radius, int sectorCount, int stackCount) {
 			Vertex v;
 			v.position = position;
 			v.normal = normal;
-			v.texCoord = { (float)j / sectorCount, (float)i / stackCount };
 			sphere.vertices.push_back(v);
 		}
 	}
@@ -114,6 +112,56 @@ Mesh createSphereMesh(float radius, int sectorCount, int stackCount) {
 void printVec3(glm::vec3 v)
 {
 	printf("%f,%f,%f\n",v.x,v.y,v.z);
+}
+
+bool checkPointInTriangle(const glm::vec3& point, const glm::vec3& pa, const glm::vec3& pb, const glm::vec3& pc)
+{
+	glm::vec3 e10 = pb - pa;
+	glm::vec3 e20 = pc - pa;
+	float a = glm::dot(e10,e10);
+	float b = glm::dot(e10,e20);
+	float c = glm::dot(e20,e20);
+	float ac_bb = (a * c) - (b * b);
+	glm::vec3 vp(point.x - pa.x, point.y - pa.y, point.z - pa.z);
+	float d = glm::dot(vp,e10);
+	float e = glm::dot(vp,e20);
+	float x = (d * c) - (e * b);
+	float y = (e * a) - (d * b);
+	float z = x + y - ac_bb;
+	//return false;
+	return ((inMine(z) & ~(inMine(x) | inMine(y))) & 0x80000000);
+
+}
+bool getLowestRoot(float a, float b, float c, float maxR, float* root)
+{
+	// Check if a solution exists
+	float determinant = b * b - 4.0f * a * c;
+	// If determinant is negative it means no solutions.
+	if (determinant < 0.0f) return false;
+	// calculate the two roots: (if determinant == 0 then
+	// x1==x2 but let’s disregard that slight optimization)
+	float sqrtD = sqrt(determinant);
+	float r1 = (-b - sqrtD) / (2 * a);
+	float r2 = (-b + sqrtD) / (2 * a);
+	// Sort so x1 <= x2
+	if (r1 > r2) {
+		float temp = r2;
+		r2 = r1;
+		r1 = temp;
+	}
+	// Get lowest root:
+	if (r1 > 0 && r1 < maxR) {
+		*root = r1;
+		return true;
+	}
+	// It is possible that we want x2 - this can happen
+	// if x1 < 0
+	if (r2 > 0 && r2 < maxR) {
+		*root = r2;
+		return true;
+	}
+	// No (valid) solutions
+	return false;
 }
 
 void renderMesh(Mesh mesh, glm::vec3 pos, glm::vec3 color, float scale )
@@ -144,3 +192,13 @@ void renderMesh(Mesh mesh, glm::vec3 pos, glm::vec3 color, float scale )
 
 	glPopMatrix();
 }
+
+
+Screen* screen = nullptr;
+
+
+glm::mat4 model = glm::mat4(1.0f);
+
+glm::mat4 view = glm::mat4(1.0f);
+
+glm::mat4 projection = glm::mat4(1.0f);

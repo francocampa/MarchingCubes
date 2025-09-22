@@ -25,6 +25,18 @@
     <Filter Include="TerrainGen">
       <UniqueIdentifier>{1f3b0865-f259-4586-abee-ee235dbad038}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{119d17a4-bf12-4584-93b3-b43b830c8dfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Vertex">
+      <UniqueIdentifier>{62c2f7a4-8f0b-4114-a1af-f952ee2c5470}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Fragment">
+      <UniqueIdentifier>{574628b4-96da-443d-97fa-d5e83a3c01fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{72eede1d-3d65-41b1-83cb-c0fbdba4a028}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -63,6 +75,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PhysicsEngine.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
@@ -86,10 +101,22 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>TerrainGen</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsEngine.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="MCTables.h">
       <Filter>Helpers</Filter>
+    </None>
+    <None Include="shaders\terrain_color.glsl">
+      <Filter>Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\terrain_color_fragment.glsl">
+      <Filter>Shaders\Fragment</Filter>
     </None>
   </ItemGroup>
 </Project>

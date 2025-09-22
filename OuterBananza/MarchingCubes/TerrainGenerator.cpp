@@ -1,8 +1,11 @@
 #include "TerrainGenerator.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include "PhysicsEngine.h";
 
 
 void TerrainGenerator::handleCamera(float delta)
 {
+	//Camera cam = usePlayerCam ? player.getCamera() : this->cam;
 	if (InputController::mouseRight) {
 		//Rotate
 		SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -53,6 +56,8 @@ void TerrainGenerator::handleCamera(float delta)
 	center.x = cam.position.x + sin(cam.phi) * cos(cam.theta);
 	center.y = cam.position.y + cos(cam.phi);
 	center.z = cam.position.z + sin(cam.phi) * sin(cam.theta);
+
+	view = glm::lookAt(cam.position, center, glm::vec3(0,1,0));
 
 	gluLookAt(cam.position.x, cam.position.y, cam.position.z, center.x, center.y, center.z, 0, 1, 0);
 }
@@ -127,8 +132,6 @@ std::vector<glm::vec3> TerrainGenerator::getPointsInRadius(glm::vec3 pos, float 
 					points.push_back(point);
 			}
 
-	printf("%d \n", points.size());
-
 	return points;
 }
 
@@ -140,7 +143,8 @@ void TerrainGenerator::handleUI()
 	ImGui::NewFrame();
 
 	ImGui::Begin("Files menu");
-	;
+	if (ImGui::Button("Back"))
+		screen = nullptr;
 	if (ImGui::SliderFloat("Threshold", &threshold, -5.0f, 5.0f)
 		|| ImGui::SliderFloat("Frequency", &frequency, 0.0f, 1.0f) 
 		|| ImGui::SliderFloat("Noise weight", &noiseWeight,0,10.0f)
@@ -183,6 +187,7 @@ void TerrainGenerator::handleUI()
 
 	ImGui::Checkbox("Show spheres", &showSpheres);
 	ImGui::Checkbox("Show chunk box", &showChunks);
+	ImGui::Checkbox("Swap camera", &usePlayerCam);
 	ImGui::End();
 
 	ImGui::Render();
@@ -203,14 +208,15 @@ void TerrainGenerator::handleVisualizations()
 	if (showChunks) {
 		float chunkSeparation = base * distance;
 		for (int x = 0; x < 3; x++)
-			for (int z = 0; z < 3; z++) {
-				glm::vec3 chunkOrigin = centerChunk - glm::vec3(x - 1, 0, z - 1) * chunkSeparation;
-				Mesh cube = createCubeMesh(chunkSeparation);
+			for (int y = 0; y < 3; y++)
+				for (int z = 0; z < 3; z++) {
+					glm::vec3 chunkOrigin = centerChunk - glm::vec3(x - 1, y - 1, z - 1) * chunkSeparation;
+					Mesh cube = createCubeMesh(chunkSeparation);
 
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				renderMesh(cube, chunkOrigin + base * distance / 2, glm::vec3(1, 1, 1));
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
+					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+					renderMesh(cube, chunkOrigin + base * distance / 2, glm::vec3(1, 1, 1));
+					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				}
 		
 	}
 }
@@ -241,26 +247,38 @@ void TerrainGenerator::setNoiseParams()
 
 TerrainGenerator::TerrainGenerator()
 {
+	//glShadeModel(GL_FLAT);
 	glShadeModel(GL_SMOOTH);
 	setNoiseParams();
 	generateTerrain();
 
 	player = Player();
+
+	physics = new PhysicsEngine();
+	for (int i = 0; i < 27; i++)
+	{
+		physics->addTerrain(chunks[i].mesh);
+	}
+	physics->setPlayer(&player);
 }
 
 void TerrainGenerator::generateTerrain()
 {
-	float chunkSeparation = base * distance;
+	glm::vec3 chunkSeparation = glm::vec3(base * distance,height*distance, base * distance);
 
 	for (int x = 0; x < 3; x++)
-		for (int z = 0; z < 3; z++) {
-			glm::vec3 chunkOrigin = centerChunk - glm::vec3(x-1,0,z-1) * chunkSeparation;
-			int index = x * 3 + z;
-			generateChunk(chunkOrigin,chunks[index].mesh);
-			chunks->pos = glm::vec3(x - 1, 0, z - 1) * chunkSeparation;
-		}
-
-
+		for (int y = 0; y < 3; y++)
+			for (int z = 0; z < 3; z++) {
+				glm::vec3 chunkOrigin = centerChunk - glm::vec3(x-1,y-1,z-1) * chunkSeparation;
+				int index = x * 9 + y * 3 + z;
+				generateChunk(chunkOrigin,chunks[index].mesh);
+				chunks->pos = glm::vec3(x - 1, y-1, z - 1) * chunkSeparation;
+			}
+	int vertices = 0;
+	for (int x = 0; x < 3; x++)
+		for (int y = 0; y < 3; y++)
+			for (int z = 0; z < 3; z++)
+				vertices += chunks[x * 9 + y * 3 + z].mesh.vertices.size();
 
 	visualizationSpheres.clear();
 	// Preview spheres
@@ -281,6 +299,7 @@ void TerrainGenerator::generateChunk(glm::vec3 offset, Mesh&terrain) {
 	//MC
 	terrain.vertices.clear();
 	terrain.indices.clear();
+	std::unordered_map<EdgeKey, int, EdgeKeyHash> vertexIndex;
 	for (int x = 0; x < base; x++)
 		for (int y = 0; y < height; y++)
 			for (int z = 0; z < base; z++) {
@@ -295,11 +314,16 @@ void TerrainGenerator::generateChunk(glm::vec3 offset, Mesh&terrain) {
 						break;
 
 					glm::vec3 points[3];
+					EdgeKey edgeKeys[3];
 					for (int j = 0; j < 3; j++)
 					{
 						int edge = TriangleTable[mcCase][i + j];
+
 						glm::vec3 corner0 = getIndexPos(pos, EdgeVertexIndices[edge][0]);
 						glm::vec3 corner1 = getIndexPos(pos, EdgeVertexIndices[edge][1]);
+						if (glm::min(corner0,corner1) == corner1) std::swap(corner0, corner1);
+						edgeKeys[j] = { corner0 / distance, corner1 / distance };
+
 						float corner0Val = f(corner0);
 						float corner1Val = f(corner1);
 						float t = (threshold - corner0Val) / (corner1Val - corner0Val);
@@ -312,12 +336,26 @@ void TerrainGenerator::generateChunk(glm::vec3 offset, Mesh&terrain) {
 					glm::vec3 e1 = points[2] - points[0];
 					glm::vec3 normal = glm::cross(e1, e0);
 					for (int j = 0; j < 3; j++) {
-						Vertex v = { points[j], normal ,glm::vec2(0,0) };
-						terrain.indices.push_back(terrain.vertices.size());
-						terrain.vertices.push_back(v);
+						EdgeKey edgeKey = edgeKeys[j];
+						auto it = vertexIndex.find(edgeKey);
+						if (it != vertexIndex.end()){
+							int index = vertexIndex[edgeKey];
+							terrain.indices.push_back(index);
+							terrain.vertices[index].normal = terrain.vertices[index].normal + normal;
+						}else {
+							Vertex v = { points[j], normal };
+							terrain.indices.push_back(terrain.vertices.size());
+							vertexIndex[edgeKey] = terrain.vertices.size();
+							terrain.vertices.push_back(v);
+						}
 					}
 				}
 			}
+
+	for (int i = 0; i < terrain.vertices.size(); i++)
+	{
+		terrain.vertices[i].normal = glm::normalize(terrain.vertices[i].normal);
+	}
 }
 
 float TerrainGenerator::f(glm::vec3 pos) {
@@ -326,22 +364,38 @@ float TerrainGenerator::f(glm::vec3 pos) {
 	return terrainModifications.count(ipos) > 0 ?
 		terrainModifications[ipos]
 		: -pos.y + noise.GetNoise(pos.x, pos.y, pos.z)*noiseWeight;
+
+	//return pos.x < 5 ? 10 : pos.y > -2 ? -10 : 10;
 }
 
 void TerrainGenerator::process(float delta) {
+
 	handleCamera(delta);
 	handleLight();
 	handlePlayer(delta);
 	handleVisualizations();
+	physics->processPhysics(delta);
+
+	//terrainShader.use();
+
+	terrainShader.setMat4("model", model);
+	terrainShader.setMat4("view", view);
+	terrainShader.setMat4("projection", projection);
 
 	glEnable(GL_LIGHTING);
 	
-	for(int i = 0; i < 9 ; i++)
-		renderMesh(chunks[i].mesh, glm::vec3(0, 0, 0), glm::vec3(0.5, 0, 0), 1);
+	for(int i = 0; i < 27 ; i++)
+		renderMesh(chunks[i].mesh, glm::vec3(0, 0, 0), glm::vec3(0, 0.8, 0), 1);
 
 	glDisable(GL_LIGHTING);
 
 	handleUI();
+}
+
+Mesh* TerrainGenerator::getTerrainMesh()
+{
+	printf("chunk vertices %d\n", chunks[13].mesh.vertices.size());
+	return &chunks[13].mesh;
 }
 
 

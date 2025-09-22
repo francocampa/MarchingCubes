@@ -81,6 +81,8 @@ void InteractiveMC::handleUI()
 	ImGui::NewFrame();
 
 	ImGui::Begin("Files menu");
+	if (ImGui::Button("Back"))
+		screen = nullptr;
 	ImGui::SliderFloat("Threshold", &threshold, 0.0f, 20.0f);
 	for (int i = 0; i < 8; i++) {
 		std::string label = "Vertex " + std::to_string(i);
@@ -136,7 +138,7 @@ void InteractiveMC::process(float delta) {
 		glm::vec3 e1 = points[2] - points[0];
 		glm::vec3 normal = glm::cross(e1, e0);
 		for (int j = 0; j < 3; j++) {
-			Vertex v = { points[j], normal ,glm::vec2(0,0) };
+			Vertex v = { points[j], normal };
 			mc.indices.push_back(mc.vertices.size());
 			mc.vertices.push_back(v);
 		}

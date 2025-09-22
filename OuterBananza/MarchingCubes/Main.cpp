@@ -4,6 +4,7 @@
 #include <SDL_mixer.h>
 #include <GL/glu.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -18,7 +19,6 @@ void setupLighting();
 
 glm::ivec2 windowSize = { 1024,768 };
 Camera camera = { {-10,10,-10}, pi / 4, pi / 1.5f };
-Screen* screen = nullptr;
 
 bool close = false;
 int main(int argc, char* argv[]) {
@@ -50,6 +50,8 @@ int main(int argc, char* argv[]) {
 
 	glClearColor(0.1, 0, 0.3f, 1.0f);
 	gluPerspective(45, windowSize.x / (float)windowSize.y, 0.1, 100);
+	projection = glm::perspective(glm::radians(45.0f), windowSize.x / (float)windowSize.y, 0.1f, 100.0f);
+
 	glEnable(GL_DEPTH_TEST);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -60,7 +62,7 @@ int main(int argc, char* argv[]) {
 	Uint64 currentTick = SDL_GetPerformanceCounter();
 	Uint64 lastTick = currentTick;
 	//screen = new InteractiveMC();
-	screen = new TerrainGenerator();
+	//screen = new TerrainGenerator();
 	do {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
@@ -72,6 +74,21 @@ int main(int argc, char* argv[]) {
 		InputController::procesFrameInputs(delta);
 		if (screen != nullptr)
 			screen->process(delta);
+		else {
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplSDL2_NewFrame();
+			ImGui::NewFrame();
+
+			ImGui::Begin("Screens menu");
+			if (ImGui::Button("Interactive MC"))
+				screen = new InteractiveMC();
+			if (ImGui::Button("Terrain chunks"))
+				screen = new TerrainGenerator();
+			ImGui::End();
+
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		}
 
 		SDL_GL_SwapWindow(win);
 	} while (!InputController::close);

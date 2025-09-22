@@ -1,31 +1,36 @@
-
+﻿
 #include "Player.h"
+#include "TerrainGenerator.h"
 
 void Player::handleMovement(float delta)
 {
-	float vel = 10.0f;
-
+	float unitVel = 3.0f;
+	glm::vec3 deltaVel = { 0,0,0 };
 	glm::vec3 front = glm::vec3(0,0,1); //glm::normalize(cam.position - center);
 	glm::vec3 right = glm::vec3(1, 0, 0); // glm::normalize(glm::cross(front, { 0,1,0 }));
 	glm::vec3 up = glm::vec3(0,1,0);// glm::normalize(glm::cross(right, front));
 	if (InputController::up) {
-		pos = pos - vel * delta * front;
+		deltaVel = - front;
 	}
 	if (InputController::down) {
-		pos = pos + vel * delta * front;
+		deltaVel =  front;
 	}
 	if (InputController::left) {
-		pos = pos - vel * delta * right;
+		deltaVel = - right;
 	}
 	if (InputController::right) {
-		pos = pos + vel * delta * right;
+		deltaVel =   right;
 	}
 	if (InputController::space) {
-		pos = pos + vel * delta * up;
+		//TODO: jump
 	}
-	if (InputController::shift) {
-		pos = pos - vel * delta * up;
-	}
+
+	if (deltaVel == glm::vec3(0, 0, 0))
+		deltaVel = -vel;
+
+	vel = glm::clamp(vel + deltaVel, -maxVel,maxVel);
+
+	playerBody->setLinearVelocity(Vector3(vel.x, playerBody->getLinearVelocity().y, vel.z));
 }
 
 void Player::handleCamera(float delta)
@@ -44,7 +49,7 @@ void Player::handleCamera(float delta)
 
 Player::Player()
 {
-	model = createSphereMesh(0.5,10,10);
+	model = createSphereMesh(radius,10,10);
 }
 
 void Player::process(float delta)
@@ -59,9 +64,9 @@ void Player::draw()
 	renderMesh(model,pos,glm::vec3(0.7f,0.7f,0.7f),1);
 }
 
-Camera* Player::getCamera()
+Camera Player::getCamera()
 {
-    return &cam;
+    return cam;
 }
 
 glm::vec3 Player::getCenter()
@@ -74,8 +79,33 @@ glm::vec3 Player::getPos()
 	return pos;
 }
 
+float Player::getRadius()
+{
+	return radius;
+}
+
+void Player::setBody(RigidBody* body)
+{
+	this->playerBody = body;
+}
+
+glm::vec3 Player::getVel()
+{
+	return vel;
+}
+
+void Player::moveToPos(glm::vec3 pos) {
+	this->pos = pos;
+}
+
+
 void Player::useCamera()
 {
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	gluLookAt(cam.position.x, cam.position.y, cam.position.z, center.x, center.y, center.z, 0, 1, 0);
+}
+
+void Player::setTerrain(TerrainGenerator* tg)
+{
+	terrain = tg;
 }
